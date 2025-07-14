@@ -58,6 +58,7 @@ class DataIngestion:
     
     def split_data_as_train_test(self,dataframe:pd.DataFrame):
         try:
+            # You supply only one object (dataframe). So Scikit‑learn simply slices that one object into two parts and returns them—hence train_set and test_set.
             train_set,test_set=train_test_split(
                 dataframe,test_size=self.data_ingestion_config.train_test_split_ratio
             )
