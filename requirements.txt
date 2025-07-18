@@ -8,5 +8,6 @@ scikit-learn
 ipykernel
 dill
 pyaml
+mlflow
 # pymongo[srv]==3.6
 #-e .

@@ -1,0 +1,10 @@
+artifact_location: file:///C:/python/Python_Udemy/Network%20Security/mlruns/0/models/m-2d43cfc89faf4a06945ac9900aca7743/artifacts
+creation_timestamp: 1752855585106
+experiment_id: '0'
+last_updated_timestamp: 1752855591844
+model_id: m-2d43cfc89faf4a06945ac9900aca7743
+model_type: null
+name: model
+source_run_id: b31a6f84a7ab488e8ac83677ed42ba69
+status: 2
+status_message: null
