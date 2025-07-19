@@ -9,5 +9,9 @@ ipykernel
 dill
 pyaml
 mlflow
+dagshub
+fastapi
+uvicorn
+python-multipart
 # pymongo[srv]==3.6
 #-e .
