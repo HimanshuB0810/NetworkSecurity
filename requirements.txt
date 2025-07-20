@@ -15,4 +15,4 @@ uvicorn
 python-multipart
 gunicorn
 # pymongo[srv]==3.6
-#-e .
+-e .
