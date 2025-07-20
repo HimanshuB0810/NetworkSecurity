@@ -8,6 +8,7 @@ load_dotenv()
 mongo_db_url=os.getenv("MONGODB_URL_KEY")
 print(mongo_db_url)
 import pymongo
+import uvicorn
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logging
 from networksecurity.pipeline.training_pipeline import TrainingPipeline
@@ -59,8 +60,8 @@ async def train_route():
 async def predict_route(request:Request,file:UploadFile=File(...)):
     try:
         df=pd.read_csv(file.file)
-        preprocessor=load_object("final_model\preprocessor.pkl")
-        final_model=load_object("final_model\model.pkl")
+        preprocessor = load_object("final_model/preprocessor.pkl")
+        final_model = load_object("final_model/model.pkl")
         network_model=NetworkModel(preprocessor=preprocessor,model=final_model)
         print(df.iloc[0])
         y_pred=network_model.predict(df)
@@ -75,4 +76,5 @@ async def predict_route(request:Request,file:UploadFile=File(...)):
         raise NetworkSecurityException(e,sys)
 
 if __name__=="__main__":
-    app_run(app,host="localhost",port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("app:app", host="127.0.0.1", port=port, reload=True)
