@@ -27,7 +27,7 @@ from sklearn.ensemble import (
 
 from dagshub import dagshub_logger, init
 dagshub_username = os.getenv("himanshuborikar10")
-dagshub_token = os.getenv("bd8359e98985130355192cf2136040950fbccc68")
+dagshub_token = os.getenv("30711ce1bd1244848e5099e233077297004b784e")
 
 if dagshub_username and dagshub_token:
     init(repo_owner='himanshuborikar10', repo_name='NetworkSecurity', mlflow=True,
