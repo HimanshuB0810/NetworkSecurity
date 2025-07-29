@@ -26,8 +26,15 @@ from sklearn.ensemble import (
 )
 
 from dagshub import dagshub_logger, init
-init(repo_owner='himanshuborikar10', repo_name='NetworkSecurity', mlflow=True)
+dagshub_username = os.getenv("himanshuborikar10")
+dagshub_token = os.getenv("bd8359e98985130355192cf2136040950fbccc68")
 
+if dagshub_username and dagshub_token:
+    init(repo_owner='himanshuborikar10', repo_name='NetworkSecurity', mlflow=True,
+         username=dagshub_username, token=dagshub_token)
+else:
+    print("WARNING: DagsHub credentials (DAGSHUB_USERNAME, DAGSHUB_USER_TOKEN) not found. "
+          "DagsHub functionality might be limited or fail.")
 
 class ModelTrainer:
     def __init__(self,model_trainer_config:ModelTrainerConfig,data_transformation_artifact:DataTransformationArtifact):
