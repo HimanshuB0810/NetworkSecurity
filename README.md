@@ -1,163 +1,111 @@
-````markdown
-# Network Security Project
+## Network Security ML Project
+### About The Project
+This is a comprehensive machine learning project designed to detect network security threats. The project is built as a complete MLOps pipeline, encompassing data ingestion from a MongoDB database, data validation, data transformation, model training, and a FastAPI-based web application for making real-time predictions. The system is designed to be scalable and modular, allowing for easy integration and maintenance of different components of the ML pipeline.
 
-This project aims to build a machine learning pipeline for network security, specifically for detecting intrusions or anomalies within network traffic. The pipeline includes data ingestion, data validation, data transformation, and model training.
+## Key Features
+Data Ingestion: Reads data from a MongoDB database.
 
-## Table of Contents
-- [Project Overview](#project-overview)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Pipeline Stages](#pipeline-stages)
-  - [Data Ingestion](#data-ingestion)
-  - [Data Validation](#data-validation)
-  - [Data Transformation](#data-transformation)
-  - [Model Training](#model-training)
-- [MLflow Tracking](#mlflow-tracking)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
+## ML Pipeline: 
+A structured pipeline that includes data ingestion, validation, and transformation.
 
-## Project Overview
+## Model Training: 
+Trains a machine learning model on the processed data and stores it for later use.
 
-The core idea behind this project is to automate the process of building and deploying a machine learning model that can identify malicious activities in network data. The pipeline is designed to be robust, handling data inconsistencies, drifts, and leveraging various machine learning models for optimal performance.
+## Prediction Service: 
+A FastAPI application with a /predict endpoint that accepts a CSV file, processes it, makes predictions using the trained model, and returns the results in an HTML table.
+
+## Dependencies: 
+All dependencies are managed via requirements.txt.
+
+## Configuration: 
+Uses schema.yaml to define the data schema for validation.
+
+## Technologies
+The project leverages the following technologies and libraries:
+
+Backend Framework: FastAPI, Uvicorn
+
+Machine Learning: Scikit-learn
+
+Data Handling: Pandas, NumPy
+
+Database: MongoDB
+
+Configuration: PyYAML
+
+Logging: Python's built-in logging module
+
+MLOps: DVC, MLflow (as implied by requirements)
+
+Other: python-dotenv, certifi, dill (for object serialization)
+
+## Getting Started
+Prerequisites
+To set up and run this project, you will need:
+
+Python 3.10 or higher
+
+A MongoDB instance (local or remote)
+
+A .env file with your MongoDB connection URL, e.g., MONGODB_URL_KEY="mongodb+srv://user:password@cluster.mongodb.net/?retryWrites=true&w=majority"
 
 ## Installation
+Clone the repository:
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/your_username/NetworkSecurity.git](https://github.com/your_username/NetworkSecurity.git)
-    cd NetworkSecurity
-    ```
+git clone https://github.com/himanshub0810/networksecurity.git
+cd networksecurity
 
-2.  **Create a virtual environment:**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: `venv\Scripts\activate`
-    ```
+## Install the dependencies:
 
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4.  **Set up environment variables:**
-    Create a `.env` file in the root directory and add your MongoDB URL:
-    ```
-    MONGO_DB_URL="your_mongodb_connection_string"
-    ```
-    If you plan to use DagsHub for MLflow tracking, also set up your DagsHub credentials:
-    ```
-    DAGSHUB_USERNAME="your_dagshub_username"
-    DAGSHUB_USER_TOKEN="your_dagshub_token"
-    ```
-
-## Usage
-
-To run the entire machine learning pipeline, execute the `main.py` file:
-
-```bash
-python main.py
-````
-
-This will trigger the sequence of operations: data ingestion, data validation, data transformation, and model training.
-
-## Pipeline Stages
-
-The project is structured into several distinct stages, each handled by a dedicated component.
-
-### Data Ingestion
-
-The `DataIngestion` class (from `networksecurity.components.data_ingestion`) is responsible for:
-
-  - Connecting to a MongoDB database to retrieve network security data.
-  - Exporting the collection data into a Pandas DataFrame.
-  - Handling missing values by replacing "na" with `np.nan`.
-  - Saving the raw data to a feature store (a CSV file).
-  - Splitting the data into training and testing sets and saving them as CSV files.
-
-### Data Validation
-
-The `DataValidation` class (from `networksecurity.components.data_validation`) performs the following checks:
-
-  - Reads the training and testing datasets.
-  - Validates the number of columns in both train and test data against a predefined schema.
-  - Detects dataset drift between the base (training) and current (testing) datasets using the Kolmogorov-Smirnov (KS) 2-sample test. A drift report is generated and saved as a YAML file.
-  - If validation passes, the valid train and test data are saved to specified paths.
-
-### Data Transformation
-
-The `DataTransformation` class (from `networksecurity.components.data_transformation`) handles:
-
-  - Reading the validated training and testing datasets.
-  - Separating input features from the target column.
-  - Replacing `-1` with `0` in the target feature.
-  - Initializing a `KNNImputer` (with parameters from `DATA_TRANSFORMATION_IMPUTER_PARAMS`) within a scikit-learn Pipeline to handle missing values.
-  - Fitting the preprocessor on the training input features and transforming both training and testing input features.
-  - Combining transformed features with their respective target features into NumPy arrays.
-  - Saving the transformed training and testing arrays.
-  - Saving the fitted preprocessor object.
-
-### Model Training
-
-The `ModelTrainer` class (from `networksecurity.components.model_trainer`) is responsible for:
-
-  - Loading the transformed training and testing NumPy arrays.
-  - Defining a dictionary of machine learning models (Random Forest, Decision Tree, Gradient Boosting, Logistic Regression, AdaBoost) and their respective hyperparameters for tuning.
-  - Evaluating these models using `evaluate_models` function to find the best performing model based on classification metrics.
-  - Calculating classification metrics (F1-score, precision, recall) for both training and testing predictions.
-  - **MLflow Tracking**: Logs metrics and potentially the best model to MLflow, integrated with DagsHub for remote tracking and versioning of experiments.
-  - Saving the best trained model (encapsulated within a `NetworkModel` object, which includes the preprocessor and the trained model) as a pickle file.
-
-## MLflow Tracking
-
-This project utilizes MLflow for experiment tracking, allowing for easy comparison of different model runs, metrics, and parameters. It is integrated with DagsHub for remote storage and visualization of MLflow experiments.
-
-  - **To view MLflow experiments:**
-    If DagsHub is configured correctly, you can view your experiments directly on your DagsHub repository under the "Experiments" tab.
-    Alternatively, if running locally, you can start the MLflow UI:
-    ```bash
-    mlflow ui
-    ```
-    Then, navigate to `http://localhost:5000` in your web browser.
+pip install -r requirements.txt
 
 ## Project Structure
+app.py: The FastAPI application that handles prediction requests and model training.
 
-```
-.
-├── networksecurity/
-│   ├── components/
-│   │   ├── data_ingestion.py
-│   │   ├── data_validation.py
-│   │   ├── data_transformation.py
-│   │   └── model_trainer.py
-│   ├── constant/
-│   │   └── training_pipeline.py
-│   ├── entity/
-│   │   ├── artifact_entity.py
-│   │   └── config_entity.py
-│   ├── exception/
-│   │   ├── exception.py
-│   │   └── __init__.py
-│   ├── logging/
-│   │   ├── logger.py
-│   │   └── __init__.py
-│   └── utils/
-│       ├── main_utils/
-│       │   ├── utils.py
-│       │   └── __init__.py
-│       └── ml_utils/
-│           ├── model/
-│           │   ├── estimator.py
-│           │   └── __init__.py
-│           └── metric/
-│               ├── classification_metric.py
-│               └── __init__.py
-├── config/
-│   └── schema.yaml
-├── .env
-├── main.py
-├── README.md
-├── requirements.txt
-└── setup.py
-```
+main.py: The entry point for the training pipeline.
 
+networksecurity/:
+
+components/: Contains the modular components of the ML pipeline (data ingestion, data validation, data transformation, model training).
+
+constant/: Defines constants used throughout the project.
+
+entity/: Contains data classes for configuration and artifacts.
+
+exception/: Custom exception handling.
+
+logging/: Logging configuration.
+
+pipeline/: Manages the overall training pipeline flow.
+
+utils/: Utility functions, including for loading/saving objects.
+
+data_schema/schema.yaml: Defines the schema for data validation.
+
+final_model/: Directory to store the trained model and preprocessor.
+
+requirements.txt: Lists all project dependencies.
+
+templates/table.html: HTML template for displaying prediction results.
+
+test_mongodb.py: A utility script for testing the MongoDB connection.
+
+## Usage
+Training the Model
+To initiate the full machine learning training pipeline, run the main.py script. This will perform all pipeline steps from data ingestion to model training.
+
+python main.py
+
+## Running the Web Server
+To start the FastAPI web server, run the app.py file. The server will be accessible at http://localhost:8000.
+
+uvicorn app:app --host localhost --port 8000 --reload
+
+## Making Predictions
+Once the server is running, you can submit a CSV file to the /predict endpoint to get predictions. The application will process the data using the preprocessor and model, and return an HTML page with the results.
+
+You can use a tool like curl or Postman to send a file to the endpoint.
+
+Contact
+Himanshu - [himanshuborikar10@gmail.com]
+Project Link: https://github.com/himanshub0810/networksecurity
