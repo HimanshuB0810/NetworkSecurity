@@ -68,7 +68,11 @@ async def predict_route(request:Request,file:UploadFile=File(...)):
         print(y_pred)
         df['predicated_column']=y_pred
         print(df["predicated_column"])
-        df.to_csv("predication_output/output.csv")
+
+        pred_out = 'predication_output'
+        os.makedirs(pred_out, exist_ok=True)
+        df.to_csv(f"{pred_out}/output.csv")
+        
         table_html=df.to_html(classes='table table-striped')
         return templates.TemplateResponse("table.html",{"request":request,"table":table_html})
 
